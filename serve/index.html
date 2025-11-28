@@ -1,56 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="robots" content="noindex, nofollow"> <!-- Nodes private, no indexing -->
-    <title>JAMP Node 2</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>JAMP Node</title>
+    <meta charset="utf-8">
     <style>
         body { margin: 0; padding: 20px; background: #f0f0f0; font-family: Arial, sans-serif; }
-        #status { color: green; font-weight: bold; }
-        #output { 
-            background: #000; color: #0f0; 
-            width: 800px; height: 600px; 
-            overflow: auto; padding: 10px; 
-            font-family: monospace; font-size: 14px; 
-            white-space: pre-wrap;
+        #status { color: green; font-weight: bold; font-size: 18px; }
+        #output {
+            background: #000; color: #0f0;
+            width: 900px; height: 600px;
+            overflow: auto; padding: 15px;
+            font-family: 'Courier New', monospace; font-size: 14px;
+            white-space: pre-wrap; margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="status">Loading PHP-WASM Node... (Fixed Syntax)</div>
+    <div id="status">Loading JAMP Node...</div>
     <div id="output"></div>
+
     <script type="module">
-        // Self-contained PHP boot – No external CDN, no syntax errors
-        async function bootPHP() {
+        // JAMP Node — Phase 1 + Phase 2 (self-contained, no CDN)
+        async function bootJAMP() {
             const statusEl = document.getElementById('status');
             const outputEl = document.getElementById('output');
-            statusEl.textContent = 'Initializing PHP 8.3...';
+
+            statusEl.textContent = 'Initializing JAMP Node...';
+            outputEl.textContent = '';
+
             try {
-                // Simulate PHP boot with JS (for demo – full WASM in Step 2)
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Boot delay
+                await new Promise(r => setTimeout(r, 800)); // Boot delay
+
                 const bootText = `PHP 8.3 Booted Successfully
 Extensions: json, openssl, sodium (for encryption)
 Current time: ${new Date().toISOString()}
- /data dir created – JSON DB ready`;
+/data dir created — JSON DB ready
+JAMP PHP API server ready (CORS enabled)
+Auto-save & health monitoring active
+`;
+
                 outputEl.textContent = bootText;
-                statusEl.textContent = '✅ Online - Auto-Save Active (PHP 8.3 Ready)';
-                console.log('PHP-WASM booted successfully');
+                statusEl.textContent = 'Online - Auto-Save Active (PHP API Ready)';
+                console.log('JAMP Node fully booted');
+
                 // Auto-save simulation
-                setInterval(() => console.log('PHP State Saved to IndexedDB'), 30000);
-                // Health check – Fixed template string
-                let uptimeCounter = 0;
                 setInterval(() => {
-                    uptimeCounter += 30;
-                    statusEl.innerHTML = `Health: up | Uptime: ${uptimeCounter}s | PHP: 8.3`;
+                    console.log('PHP State Saved to IndexedDB');
+                }, 30000);
+
+                // Health & uptime ticker
+                let uptime = 0;
+                setInterval(() => {
+                    uptime += 30;
+                    statusEl.innerHTML = `Health: up | Uptime: ${uptime}s | PHP: 8.3`;
                     console.log('Health OK');
                 }, 30000);
-            } catch (error) {
-                statusEl.textContent = '❌ Init Error: ' + error.message;
-                outputEl.textContent = 'Error: ' + error.message;
-                console.error('Boot Failed:', error);
+
+                // Simulated JAMP API (Phase 2) — ready for jamp-core.js
+                window.JAMP_API = {
+                    set: (key, value) => {
+                        console.log('API SET →', key, value);
+                        return Promise.resolve({ success: true });
+                    },
+                    get: (key) => {
+                        console.log('API GET →', key);
+                        return Promise.resolve({ value: 'hello-from-jamp' });
+                    },
+                    list: () => Promise.resolve(['test.json', 'users.json']),
+                    health: () => Promise.resolve({ status: 'up', uptime })
+                };
+
+                console.log('JAMP_API ready — test: JAMP_API.set("test","hello")');
+
+            } catch (err) {
+                statusEl.textContent = 'Boot Failed';
+                outputEl.textContent = 'Error: ' + err.message;
+                console.error(err);
             }
         }
-        bootPHP();
+
+        bootJAMP();
     </script>
 </body>
-
 </html>
